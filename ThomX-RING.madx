@@ -1,0 +1,83 @@
+
+//beam.dL0: drift, l=0.0;
+//DIPOLES
+SEPT: sbend, l=0.251072, angle= -0.16, e1=-0.16, e2=0, fint= 0, hgap= 0;
+//kick1: sbend, l=0.200004, angle= -0.011, e1=-0.011, e2=0, fint= 0, hgap= 0;
+//kick2: sbend, l=0.200004, angle= -0.011, e1=0, e2=-0.011, fint= 0, hgap= 0;
+//sept2: sbend, l=0.251072, angle= -0.16, e1=0, e2=-0.16, fint= 0, hgap= 0;
+BEND: sbend, l=0.296233, angle= 0.785398, e1=0.0332, e2=0.0332, fint= 0.5, hgap= 0.013919; // fint= 0.5, hgap= 0.01392; // fint= 0.34792, hgap= 0.02; (original)
+
+
+
+//DRIFTS
+dL := (0.296233-0.27646)/2;
+LSX=0.;
+
+SD0: drift, l= 0.1-dL;
+
+SD1S1B: drift, l= 0.600000E-01;
+SD1S1: drift, L= 0.190000E+00-LSX/2;
+SD1S: drift, L= 0.7500000E-01-LSX/2;
+
+SD3S2: drift, L= 0.1250000E+00-LSX/2 - dL;
+
+SD2: drift, L= 0.2100000E+00;
+SD31: drift, L= 0.7537500E+00 - dL;
+SD5B: drift, L= 0.7400000E+00;
+SD5: drift, L= 0.0600000E+00;
+
+SD3S: drift, L= 0.7500000E-01-LSX/2;
+SD3S1: drift, L= 0.1350000E+00-LSX/2;
+
+SD2SB: drift, L= 0.4000000E-01;
+SD2S: drift, L= 0.1950000E+00 - dL;
+
+//QUADS
+qp1: quadrupole, l=0.15, k1= -.5197395E+01;
+qp2: quadrupole, l=0.15, k1= 0.9962261E+01;
+qp4: quadrupole, l=0.15, k1= 0.1614904E+02;
+qp3: quadrupole, l=0.15, k1= -.1791292E+02;
+qp31: quadrupole, l=0.15, k1= -.1033062E+02;
+qp41: quadrupole, l=0.15, k1= 0.6888317E+01;
+
+//SEXTS
+sx_on=0.0;
+sx1: sextupole, l=1e-06, k2= -.6415727E+07*sx_on;
+sx3: sextupole, l=1e-06, k2= 0.2445860E+07*sx_on;
+sx2: sextupole, l=1e-06, k2= -.3289547E+07*sx_on;
+
+//MARKERS
+BPMx: marker;
+BPMz: marker;
+HCOR: marker;
+VCOR: marker;
+IP: marker;
+FIN: marker;
+DEBUT: marker;
+RF: marker;
+SEPT: marker;
+
+
+RING: line=(DEBUT,SEPT,SD5B,BPMx, BPMz, SD5, QP1, SD2, QP2, SD31,
+BEND, SD3S2, SX1, HCOR ,VCOR ,SD3S, QP31, SD3S, SX3, HCOR, VCOR,
+ SD3S1 ,QP41 ,SD1S1B, BPMx, BPMz, SD1S1, SX2, HCOR, VCOR ,SD1S ,QP4, 
+SD2, QP3, SD2SB, BPMx, BPMz ,SD2S, BEND, SD0,IP,
+SD0, BEND, SD2S, BPMx, BPMz, SD2SB, QP3, SD2, QP4, SD1S, SX2, HCOR, VCOR,
+ SD1S1, BPMx, BPMz, SD1S1B, QP41, SD3S1, SX3, HCOR, VCOR, SD3S, QP31, SD3S, SX1, HCOR ,VCOR, SD3S2, BEND,
+SD31, QP2, SD2, QP1, SD5, BPMx, BPMz, SD5B, RF,
+SD5B,BPMx, BPMz, SD5, QP1, SD2, QP2, SD31,
+BEND, SD3S2, SX1, HCOR ,VCOR ,SD3S, QP31, SD3S, SX3, HCOR, VCOR,
+ SD3S1 ,QP41 ,SD1S1B, BPMx, BPMz, SD1S1, SX2, HCOR, VCOR ,SD1S ,QP4, 
+SD2, QP3, SD2SB, BPMx, BPMz ,SD2S, BEND, SD0,
+SD0, BEND, SD2S, BPMx, BPMz, SD2SB, QP3, SD2, QP4, SD1S, SX2, HCOR, VCOR,
+ SD1S1, BPMx, BPMz, SD1S1B, QP41, SD3S1, SX3, HCOR, VCOR, SD3S, QP31, SD3S, SX1, HCOR ,VCOR, SD3S2, BEND,
+SD31, QP2, SD2, QP1, SD5, BPMx, BPMz, SD5B, FIN);
+
+beam, particle= electron, pc= 0.05, ex= 0.00015, ey= 0.00015, sequence=RING;
+
+use, sequence = RING;
+
+select,flag = twiss,column = name,s,betx,alfx,dx, dpx, bety,alfy, mux, muy;
+
+twiss, betx= 3.486, alfx= 0., bety= 3.057, alfy= 0.,DX=0.022, DPX=0., save, file = thomx.RING-twiss.txt;
+stop;
